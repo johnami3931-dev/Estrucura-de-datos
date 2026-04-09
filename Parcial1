@@ -1,0 +1,157 @@
+#include <stdio.h>
+#define MAX 50
+
+/* Prototipos de funciones */
+void mostrarArreglo(int arr[], int n);
+void copiarArreglo(int original[], int destino[], int n);
+void burbuja(int arr[], int n);
+void seleccion(int arr[], int n);
+void insercion(int arr[], int n);
+
+int main() {
+    int vectorOriginal[MAX];
+    int vectorTrabajo[MAX];
+    int n = 0;
+    int opcion;
+    int datosIngresados = 0; // Actúa como bandera (0: Falso, 1: Verdadero)
+
+    do {
+        printf("\n--- PARCIAL 1: METODOS DE ORDENAMIENTO ---\n");
+        printf("1. Registrar datos en el vector\n");
+        printf("2. Mostrar el arreglo original\n");
+        printf("3. Ordenar mediante metodo Burbuja\n");
+        printf("4. Ordenar mediante metodo Seleccion\n");
+        printf("5. Ordenar mediante metodo Insercion\n");
+        printf("6. Salir\n");
+        printf("Seleccione una opcion: ");
+        
+        if (scanf("%d", &opcion) != 1) {
+            printf("Error: Ingrese un numero valido.\n");
+            while (getchar() != '\n');
+            continue;
+        }
+
+        if (datosIngresados == 0 && opcion != 1 && opcion != 6) {
+            printf("\n[!] Bloqueado: Primero debe registrar datos (Opcion 1).\n");
+            continue;
+        }
+
+        switch (opcion) {
+            case 1:
+                printf("\nCuantos elementos desea ingresar? (Max %d): ", MAX);
+                scanf("%d", &n);
+                if (n > 0 && n <= MAX) {
+                    for (int i = 0; i < n; i++) {
+                        printf("Dato [%d]: ", i + 1);
+                        scanf("%d", &vectorOriginal[i]);
+                    }
+                    datosIngresados = 1;
+                    printf("Datos guardados con exito.\n");
+                } else {
+                    printf("Cantidad no valida.\n");
+                }
+                break;
+
+            case 2:
+                printf("\nArreglo Original: ");
+                mostrarArreglo(vectorOriginal, n);
+                break;
+
+            case 3:
+                copiarArreglo(vectorOriginal, vectorTrabajo, n);
+                burbuja(vectorTrabajo, n);
+                break;
+
+            case 4:
+                copiarArreglo(vectorOriginal, vectorTrabajo, n);
+                seleccion(vectorTrabajo, n);
+                break;
+
+            case 5:
+                copiarArreglo(vectorOriginal, vectorTrabajo, n);
+                insercion(vectorTrabajo, n);
+                break;
+
+            case 6:
+                printf("Saliendo del programa...\n");
+                break;
+
+            default:
+                printf("Opcion no valida.\n");
+        }
+    } while (opcion != 6);
+
+    return 0;
+}
+
+/* Función para imprimir el estado actual del arreglo */
+void mostrarArreglo(int arr[], int n) {
+    printf("[ ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("]\n");
+}
+
+/* Copia los datos para no alterar el vector original */
+void copiarArreglo(int original[], int destino[], int n) {
+    for (int i = 0; i < n; i++) {
+        destino[i] = original[i];
+    }
+}
+
+/* Implementación con visualización de pasadas e intercambios  */
+void burbuja(int arr[], int n) {
+    printf("\n--- ORDENAMIENTO BURBUJA ---\n");
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                printf("Intercambio: %d por %d -> ", arr[j], arr[j + 1]);
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                mostrarArreglo(arr, n);
+            }
+        }
+        printf("Fin de la pasada %d: ", i + 1);
+        mostrarArreglo(arr, n);
+    }
+}
+
+void seleccion(int arr[], int n) {
+    printf("\n--- ORDENAMIENTO SELECCION ---\n");
+    for (int i = 0; i < n - 1; i++) {
+        int min = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[min]) {
+                min = j;
+            }
+        }
+        if (min != i) {
+            printf("Intercambio (minimo hallado %d): ", arr[min]);
+            int temp = arr[i];
+            arr[i] = arr[min];
+            arr[min] = temp;
+            mostrarArreglo(arr, n);
+        }
+        printf("Fin del ciclo %d: ", i + 1);
+        mostrarArreglo(arr, n);
+    }
+}
+
+void insercion(int arr[], int n) {
+    printf("\n--- ORDENAMIENTO INSERCION ---\n");
+    for (int i = 1; i < n; i++) {
+        int actual = arr[i];
+        int j = i - 1;
+        printf("Tomando los elemento: %d\n", actual);
+        while (j >= 0 && arr[j] > actual) {
+            printf("Desplazando %d hacia la derecha\n", arr[j]);
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = actual;
+        printf("Fin del ciclo de insercion %d: ", i);
+        mostrarArreglo(arr, n);
+    }
+}
